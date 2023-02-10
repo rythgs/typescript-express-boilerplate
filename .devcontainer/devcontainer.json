@@ -1,0 +1,91 @@
+// See https://containers.dev/implementors/json_reference/ for configuration reference
+{
+  "name": "typescript-express-boilerplate devcontainer",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "dockerComposeFile": "docker-compose.yml",
+  "remoteUser": "node",
+  "shutdownAction": "stopCompose",
+  "postCreateCommand": "sudo chown -R node.node /workspace/node_modules",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "EditorConfig.EditorConfig",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "yzhang.markdown-all-in-one",
+        "rangav.vscode-thunder-client",
+        "shd101wyy.markdown-preview-enhanced",
+        "mhutchie.git-graph",
+        "seatonjiang.gitmoji-vscode"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true,
+          "source.organizeImports": true
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "gitmoji.outputType": "emoji",
+        "gitmoji.onlyUseCustomEmoji": true,
+        "gitmoji.addCustomEmoji": [
+          {
+            "emoji": "🎉",
+            "code": ":tada:",
+            "description": "初めてのコミット"
+          },
+          { "emoji": "🐛", "code": ":bug:", "description": "バグ修正" },
+          { "emoji": "✨", "code": ":sparkles:", "description": "機能追加" },
+          {
+            "emoji": "♻️",
+            "code": ":recycle:",
+            "description": "リファクタリング"
+          },
+          {
+            "emoji": "🔥",
+            "code": ":fire:",
+            "description": "不要な機能・使われなくなった機能の削除"
+          },
+          {
+            "emoji": "💚",
+            "code": ":green_heart:",
+            "description": "テストやCIの修正・改善"
+          },
+          {
+            "emoji": "🔨",
+            "code": ":hammer:",
+            "description": "Lintエラーの修正やコードスタイルの修正"
+          },
+          {
+            "emoji": "⚡️",
+            "code": ":zap:",
+            "description": "パフォーマンス改善"
+          },
+          {
+            "emoji": "📦",
+            "code": ":package:",
+            "description": "依存パッケージなどのアップデート"
+          },
+          {
+            "emoji": "🔒",
+            "code": ":lock:",
+            "description": "セキュリティ関連の改善"
+          },
+          {
+            "emoji": "📝",
+            "code": ":memo:",
+            "description": "ドキュメントの修正"
+          },
+          {
+            "emoji": "🚧",
+            "code": ":construction:",
+            "description": "Work in progress."
+          }
+        ]
+      }
+    }
+  }
+}

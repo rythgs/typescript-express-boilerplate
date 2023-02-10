@@ -52,7 +52,7 @@ export const register = asyncHandler<unknown, unknown, RegisterInput>(
 export const login = asyncHandler<unknown, unknown, LoginInput>(
   async (req, res) => {
     // トークン生成
-    const tokens = await tokenService.generateAuthTokens(req.user as User)
+    const tokens = await tokenService.generateTokens(req.user as User)
     // Cookieに格納
     setTokenCookies(res, tokens)
     res.status(httpStatus.OK).send({ accessToken: tokens.access.token })

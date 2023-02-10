@@ -1,21 +1,13 @@
-import { Token, tokenService, TokenType } from '@/api/token'
+import { tokenService } from '@/api/token'
 import { userService } from '@/api/users'
-import { dataSource } from '@/shared/database/data-source'
-import { ApiError, ApiErrorNotFound } from '@/shared/utils'
-
-const tokenRepository = dataSource.getRepository(Token)
+import { ApiErrorForbidden } from '@/shared/utils'
 
 /**
  * ログアウト処理
  * 該当トークンは破棄する
  */
 export const logout = async (refreshToken: string): Promise<void> => {
-  const token = await tokenService.getActiveRefreshToken(refreshToken)
-  if (token == null) {
-    throw new ApiErrorNotFound()
-  }
-
-  await tokenRepository.remove([token])
+  await tokenService.revokeRefreshToken(refreshToken)
 }
 
 /**
@@ -24,16 +16,11 @@ export const logout = async (refreshToken: string): Promise<void> => {
 export const refreshAuth = async (
   refreshToken: string,
 ): Promise<tokenService.AuthTokens> => {
-  const tokenModel = await tokenService.verifyToken(
-    refreshToken,
-    'refreshTokenPublicKey',
-    TokenType.Refresh,
-  )
+  const tokenModel = await tokenService.verifyRefreshToken(refreshToken)
   const user = await userService.getUserById(tokenModel.userId)
   if (user == null) {
-    throw new ApiError()
+    throw new ApiErrorForbidden()
   }
-  await tokenService.destroyRefreshToken(tokenModel.id)
-
-  return await tokenService.generateAuthTokens(user)
+  await tokenService.revokeRefreshToken(tokenModel.token)
+  return await tokenService.generateTokens(user)
 }

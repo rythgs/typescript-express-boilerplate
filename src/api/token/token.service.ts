@@ -1,7 +1,10 @@
-import { addDays, addMinutes } from 'date-fns'
-import jwt, { type SignOptions, type VerifyOptions } from 'jsonwebtoken'
+import crypto from 'crypto'
 
-import { Token, TokenType } from './token.entity'
+import { addDays, addMinutes } from 'date-fns'
+import jwt, { type SignOptions } from 'jsonwebtoken'
+import { MoreThanOrEqual } from 'typeorm'
+
+import { Token } from './token.entity'
 
 import { type User } from '@/api/users'
 import { config } from '@/shared/config'
@@ -14,7 +17,6 @@ export interface TokenPayload {
   sub: string
   iat: number
   exp: number
-  type: TokenType
 }
 
 export interface AuthTokens {
@@ -28,122 +30,77 @@ export interface AuthTokens {
   }
 }
 
-export const generateToken = (
+const generateAccessToken = (
   userId: string,
-  expires: Date,
-  key: string,
-  type: TokenType = TokenType.Access,
   options?: SignOptions,
-  passphrase = config.jwt.passphrase,
-): string => {
+  passphrase = config.jwt.accessTokenPassphrase,
+): { token: string; expires: Date } => {
+  const expires = addMinutes(
+    new Date(),
+    config.jwt.accessTokenExpirationMinutes,
+  )
   const payload: TokenPayload = {
     sub: userId,
     iat: new Date().getTime(),
     exp: expires.getTime(),
-    type,
   }
-  const privateKey = {
-    key: Buffer.from(key, 'base64'),
+  const secret = {
+    key: Buffer.from(config.jwt.accessTokenPrivateKey, 'base64'),
     passphrase,
   }
   const signOptions: SignOptions = {
     ...(options != null && options),
     algorithm: 'RS256',
   }
-  return jwt.sign(payload, privateKey, signOptions)
-}
-
-export const generateAuthTokens = async (user: User): Promise<AuthTokens> => {
-  const now = Date.now()
-  const {
-    accessTokenPrivateKey,
-    accessTokenExpirationMinutes,
-    refreshTokenPrivateKey,
-    refreshTokenExpirationDays,
-  } = config.jwt
-
-  const accessTokenExpires = addMinutes(now, accessTokenExpirationMinutes)
-  const accessToken = generateToken(
-    user.id,
-    accessTokenExpires,
-    accessTokenPrivateKey,
-    TokenType.Access,
-  )
-  const refreshTokenExpires = addDays(now, refreshTokenExpirationDays)
-  const refreshToken = generateToken(
-    user.id,
-    refreshTokenExpires,
-    refreshTokenPrivateKey,
-    TokenType.Refresh,
-  )
-
-  await saveToken(refreshToken, user.id, refreshTokenExpires, TokenType.Refresh)
+  const token = jwt.sign(payload, secret, signOptions)
 
   return {
-    access: {
-      token: accessToken,
-      expires: accessTokenExpires,
-    },
-    refresh: {
-      token: refreshToken,
-      expires: refreshTokenExpires,
-    },
+    token,
+    expires,
   }
 }
 
-export const verifyToken = async (
-  token: string,
-  publicKeyName: 'accessTokenPublicKey' | 'refreshTokenPublicKey',
-  type: TokenType,
-  options?: VerifyOptions,
-): Promise<Token> => {
-  // トークン検証
-  const publicKey = Buffer.from(config.jwt[publicKeyName], 'base64')
-  const payload = jwt.verify(token, publicKey, {
-    ...(options != null && options),
-    algorithms: ['RS256'],
-  }) as TokenPayload
-
-  // トークンテーブルに存在するか確認
-  const entity = await tokenRepository.findOne({
-    where: {
-      token,
-      type,
-      userId: payload.sub,
-      blacklisted: false,
-    },
-  })
-
-  if (entity == null) {
-    throw new ApiErrorForbidden()
-  }
-
-  return entity
-}
-
-export const saveToken = async (
-  token: string,
-  userId: string,
-  expires: Date,
-  type: TokenType,
-  blacklisted = false,
-): Promise<Token> =>
-  await tokenRepository.save({
+const generateRefreshToken = async (userId: string): Promise<Token> => {
+  const token = `${userId}.${crypto.randomBytes(40).toString('hex')}`
+  const expires = addDays(new Date(), config.jwt.refreshTokenExpirationDays)
+  return await tokenRepository.save({
     token,
     userId,
     expires,
-    type,
-    blacklisted,
+    blacklisted: false,
   })
-
-export const destroyRefreshToken = async (id: string): Promise<void> => {
-  await tokenRepository.delete(id)
 }
 
-export const getActiveRefreshToken = async (
+export const generateTokens = async (user: User): Promise<AuthTokens> => {
+  const accessToken = generateAccessToken(user.id)
+  const refreshToken = await generateRefreshToken(user.id)
+  return {
+    access: {
+      token: accessToken.token,
+      expires: accessToken.expires,
+    },
+    refresh: {
+      token: refreshToken.token,
+      expires: refreshToken.expires,
+    },
+  }
+}
+
+export const verifyRefreshToken = async (
   refreshToken: string,
-): Promise<Token | null> => {
-  return await tokenRepository.findOne({
-    where: { token: refreshToken, type: TokenType.Refresh, blacklisted: false },
+): Promise<Token> => {
+  const token = await tokenRepository.findOneBy({
+    token: refreshToken,
+    blacklisted: false,
+    expires: MoreThanOrEqual(new Date()),
   })
+  if (token == null) {
+    throw new ApiErrorForbidden()
+  }
+
+  return token
+}
+
+export const revokeRefreshToken = async (token: string): Promise<void> => {
+  await tokenRepository.delete(token)
 }

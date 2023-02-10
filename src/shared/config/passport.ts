@@ -8,7 +8,7 @@ import { dataSource } from '../database/data-source'
 
 import { config } from './config'
 
-import { TokenType, type tokenService } from '@/api/token'
+import { type tokenService } from '@/api/token'
 import { User, userService } from '@/api/users'
 
 const cookieExtractor =
@@ -30,9 +30,6 @@ export const jwtStrategy = new JwtStrategy(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (payload: tokenService.TokenPayload, done) => {
     try {
-      if (payload.type !== TokenType.Access) {
-        throw new Error('Invalid Token.')
-      }
       const user = await userService.getUserById(payload.sub)
       if (user == null) {
         done(null, false)

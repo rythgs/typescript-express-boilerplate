@@ -1,20 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 
 import { User } from '@/api/users'
-import { BaseEntity } from '@/shared/database/base-entity'
-
-export enum TokenType {
-  Access = 'access',
-  Refresh = 'refresh',
-}
 
 @Entity('tokens')
-export class Token extends BaseEntity {
-  @Column({ type: 'longtext' })
+export class Token {
+  @PrimaryColumn()
   token: string
-
-  @Column({ type: 'enum', enum: TokenType })
-  type: string
 
   @Column()
   expires: Date

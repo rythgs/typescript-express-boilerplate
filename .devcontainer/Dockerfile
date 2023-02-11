@@ -1,5 +1,8 @@
 FROM node:lts-slim
 
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
 # Install basic development tools
 RUN apt update && apt install -y less man-db sudo git
 

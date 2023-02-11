@@ -1,4 +1,6 @@
+import path from 'path'
 import 'reflect-metadata'
+
 import { DataSource, type DataSourceOptions } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
 
@@ -20,9 +22,9 @@ const dbConfigs: DbConfigs = {
     database: `${config.db.database}_development`,
     synchronize: true,
     logging: true,
-    entities: ['src/api/**/*.entity.ts'],
+    entities: [path.join(__dirname, '../..', 'api/**/*.entity.{js,ts}')],
     migrations: [],
-    subscribers: ['src/api/**/*.subscriber.ts'],
+    subscribers: [path.join(__dirname, '../..', 'api/**/*.subscriber.{js,ts}')],
     namingStrategy: new SnakeNamingStrategy(),
     extra: {
       // timezone: '+09:00',
@@ -38,9 +40,9 @@ const dbConfigs: DbConfigs = {
     database: `${config.db.database}_test`,
     synchronize: true,
     logging: true,
-    entities: ['src/api/**/*.entity.ts'],
+    entities: [path.join(__dirname, '../..', 'api/**/*.entity.{js,ts}')],
     migrations: [],
-    subscribers: ['src/api/**/*.subscriber.ts'],
+    subscribers: [path.join(__dirname, '../..', 'api/**/*.subscriber.{js,ts}')],
     namingStrategy: new SnakeNamingStrategy(),
     extra: {
       // timezone: '+09:00',
@@ -56,9 +58,9 @@ const dbConfigs: DbConfigs = {
     database: `${config.db.database}_production`,
     synchronize: false,
     logging: true,
-    entities: ['src/api/**/*.entity.ts'],
+    entities: [path.join(__dirname, '../..', 'api/**/*.entity.{js,ts}')],
     migrations: [],
-    subscribers: ['src/api/**/*.subscriber.ts'],
+    subscribers: [path.join(__dirname, '../..', 'api/**/*.subscriber.{js,ts}')],
     namingStrategy: new SnakeNamingStrategy(),
     extra: {
       // timezone: '+09:00',

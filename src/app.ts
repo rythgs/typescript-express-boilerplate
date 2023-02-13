@@ -12,7 +12,7 @@ import {
   localStrategy,
   morganHandler,
 } from '@/shared/config'
-import { handleErrors } from '@/shared/middleware'
+import { authLimiter, handleErrors } from '@/shared/middleware'
 import { ApiErrorNotFound } from '@/shared/utils'
 
 const app = express()
@@ -33,6 +33,10 @@ app.use(cors())
 app.use(passport.initialize())
 passport.use('jwt', jwtStrategy)
 passport.use('local', localStrategy)
+
+if (config.env === 'production') {
+  app.use('/rest/v1/auth', authLimiter)
+}
 
 // api routes
 app.use('/rest/v1', routes)

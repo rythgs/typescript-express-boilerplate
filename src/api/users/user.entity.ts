@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt'
 import { Column, Entity, Index, OneToMany } from 'typeorm'
 
 import { Token } from '@/api/token'
-import { BaseEntity } from '@/shared/database/base-entity'
+import { BaseEntity } from '@/shared/database'
 
 export enum RoleType {
   USER = 'user',
@@ -11,6 +11,9 @@ export enum RoleType {
 
 @Entity('users')
 export class User extends BaseEntity {
+  @Column()
+  name: string
+
   @Index('email_index')
   @Column({ unique: true })
   email: string

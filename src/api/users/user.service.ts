@@ -5,7 +5,7 @@ import { User } from './user.entity'
 import { type userSchema } from '.'
 
 import { messages } from '@/shared/constants'
-import { dataSource } from '@/shared/database/data-source'
+import { dataSource } from '@/shared/database'
 import { ApiErrorBadRequest, ApiErrorNotFound } from '@/shared/utils'
 
 const userRepository = dataSource.getRepository(User)

@@ -8,7 +8,7 @@ import { Token } from './token.entity'
 
 import { type User } from '@/api/users'
 import { config } from '@/shared/config'
-import { dataSource } from '@/shared/database/data-source'
+import { dataSource } from '@/shared/database'
 import { ApiErrorForbidden } from '@/shared/utils'
 
 const tokenRepository = dataSource.getRepository(Token)

@@ -21,6 +21,7 @@ const envSchema = z.object({
   ACCESS_TOKEN_EXPIRATION_MINUTES: z.preprocess(Number, z.number()),
   REFRESH_TOKEN_EXPIRATION_DAYS: z.preprocess(Number, z.number()),
   DB_HOST: z.string(),
+  DB_PORT: z.optional(z.preprocess(Number, z.number())).default(3306),
   DB_USERNAME: z.string(),
   DB_PASSWORD: z.string(),
   DB_DATABASE: z.string(),
@@ -33,6 +34,7 @@ export const config = {
   port: env.PORT,
   db: {
     host: env.DB_HOST,
+    port: env.DB_PORT,
     username: env.DB_USERNAME,
     password: env.DB_PASSWORD,
     database: env.DB_DATABASE,

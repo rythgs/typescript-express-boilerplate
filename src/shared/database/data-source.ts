@@ -16,7 +16,7 @@ const dbConfigs: DbConfigs = {
   development: {
     type: 'mysql',
     host: config.db.host,
-    port: 3306,
+    port: config.db.port,
     username: config.db.username,
     password: config.db.password,
     database: `${config.db.database}_development`,
@@ -34,7 +34,7 @@ const dbConfigs: DbConfigs = {
   test: {
     type: 'mysql',
     host: config.db.host,
-    port: 3306,
+    port: config.db.port,
     username: config.db.username,
     password: config.db.password,
     database: `${config.db.database}_test`,
@@ -52,7 +52,7 @@ const dbConfigs: DbConfigs = {
   production: {
     type: 'mysql',
     host: config.db.host,
-    port: 3306,
+    port: config.db.port,
     username: config.db.username,
     password: config.db.password,
     database: `${config.db.database}_production`,

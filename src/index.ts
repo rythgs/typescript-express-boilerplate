@@ -4,48 +4,20 @@ import { createHttpTerminator, type HttpTerminator } from 'http-terminator'
 
 import app from '@/app'
 import { config, logger } from '@/shared/config'
-import { dataSource } from '@/shared/database/data-source'
+import { dataSource } from '@/shared/database'
+import { errorHandler, exitHandler } from '@/shared/utils'
 
-let server: Server | undefined
-let httpTerminator: HttpTerminator | undefined
+export let server: Server | undefined
+export let httpTerminator: HttpTerminator | undefined
 
-const exitHandler = async (code: number, timeout = 5000): Promise<void> => {
-  try {
-    logger.info(`Start graceful shutdown with code ${code}`)
-
-    setTimeout(() => {
-      logger.info(`Force shutdown with code ${code}`)
-      process.exit(code)
-    }, timeout).unref()
-
-    if (server?.listening ?? false) {
-      logger.info('Terminate HTTP connections.')
-      await httpTerminator?.terminate()
-    }
-
-    if (dataSource.isInitialized) {
-      logger.info('Close database connection.')
-      await dataSource.destroy()
-    }
-
-    logger.info(`End graceful shutdown.`)
-    process.exit(code)
-  } catch (error) {
-    logger.error('Error graceful shutdown.')
-    logger.error(error)
-    logger.info(`Force shutdown with code ${code}`)
-    process.exit(code)
-  }
-}
-
-process.on('unhandledRejection', (reason) => {
-  logger.error(`Unhandled Rejection:`, reason)
-  throw new Error('Unhandled Rejection')
+process.on('unhandledRejection', (reason: Error | any) => {
+  logger.error(`Unhandled Rejection:`, reason?.message ?? reason)
+  throw new Error(reason?.message ?? reason)
 })
 
 process.on('uncaughtException', (error: Error) => {
   logger.error(`Uncaught Exception: ${error.message}`)
-  void exitHandler(1)
+  errorHandler(error)
 })
 
 process.on('SIGTERM', () => {

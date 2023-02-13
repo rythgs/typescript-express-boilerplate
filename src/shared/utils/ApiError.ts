@@ -4,23 +4,25 @@ import { messages } from '@/shared/constants'
 
 export class ApiError extends Error {
   constructor(
+    public readonly name: string = 'Internal Server Error',
     public readonly statusCode: number = httpStatus.INTERNAL_SERVER_ERROR,
-    public readonly message: string = messages.EXCEPTION_INTERNAL_SERVER_ERROR,
+    public readonly description: string = messages.EXCEPTION_INTERNAL_SERVER_ERROR,
+    public readonly isOperational: boolean = true,
     public errors: any[] = [],
   ) {
-    super(message)
-    this.name = this.constructor.name
-
+    super(description)
     Error.captureStackTrace(this, this.constructor)
   }
 }
 
 // 400 Bad Request
 export class ApiErrorBadRequest extends ApiError {
-  constructor(message?: string, errors?: any[]) {
+  constructor(description?: string, errors?: any[]) {
     super(
+      'Bad Request',
       httpStatus.BAD_REQUEST,
-      message ?? messages.EXCEPTION_BAD_REQUEST,
+      description ?? messages.EXCEPTION_BAD_REQUEST,
+      true,
       errors,
     )
   }
@@ -28,10 +30,12 @@ export class ApiErrorBadRequest extends ApiError {
 
 // 401 Unauthorized
 export class ApiErrorUnauthorized extends ApiError {
-  constructor(message?: string, errors?: any[]) {
+  constructor(description?: string, errors?: any[]) {
     super(
+      'Unauthorized',
       httpStatus.UNAUTHORIZED,
-      message ?? messages.EXCEPTION_NEED_LOGIN,
+      description ?? messages.EXCEPTION_NEED_LOGIN,
+      true,
       errors,
     )
   }
@@ -39,14 +43,26 @@ export class ApiErrorUnauthorized extends ApiError {
 
 // 403 Forbidden
 export class ApiErrorForbidden extends ApiError {
-  constructor(message?: string, errors?: any[]) {
-    super(httpStatus.FORBIDDEN, message ?? messages.EXCEPTION_FORBIDDEN, errors)
+  constructor(description?: string, errors?: any[]) {
+    super(
+      'Forbidden',
+      httpStatus.FORBIDDEN,
+      description ?? messages.EXCEPTION_FORBIDDEN,
+      true,
+      errors,
+    )
   }
 }
 
 // 404 Not Found
 export class ApiErrorNotFound extends ApiError {
-  constructor(message?: string, errors?: any[]) {
-    super(httpStatus.NOT_FOUND, message ?? messages.EXCEPTION_NOT_FOUND, errors)
+  constructor(description?: string, errors?: any[]) {
+    super(
+      'Not Found',
+      httpStatus.NOT_FOUND,
+      description ?? messages.EXCEPTION_NOT_FOUND,
+      true,
+      errors,
+    )
   }
 }

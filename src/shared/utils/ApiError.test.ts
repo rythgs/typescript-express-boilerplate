@@ -11,24 +11,25 @@ import {
 describe('Exception', () => {
   describe('ApiError', () => {
     test('ステータスコードが500であることの確認', () => {
-      const error = new ApiError()
+      const error = new ApiError('Internal Server Error')
+      expect(error.name).toEqual('Internal Server Error')
       expect(error.statusCode).toEqual(httpStatus.INTERNAL_SERVER_ERROR)
     })
 
     test('任意のステータスコードを指定できることの確認', () => {
-      const error = new ApiError(httpStatus.CONFLICT)
+      const error = new ApiError('a', httpStatus.CONFLICT)
       expect(error.statusCode).toEqual(httpStatus.CONFLICT)
     })
 
     test('任意のメッセージを指定できることの確認', () => {
       const message = 'hogehoge'
-      const error = new ApiError(undefined, message)
+      const error = new ApiError('a', undefined, message)
       expect(error.message).toEqual(message)
     })
 
     test('任意の追加情報を指定できることの確認', () => {
       const errors = [{ test: 'aaaa' }]
-      const error = new ApiError(undefined, undefined, errors)
+      const error = new ApiError('a', undefined, undefined, true, errors)
       expect(error.errors).toEqual(expect.arrayContaining(errors))
     })
   })

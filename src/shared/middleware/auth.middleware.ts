@@ -5,11 +5,7 @@ import { messages } from '../constants'
 
 import { type User } from '@/api/users'
 import { roleRights } from '@/shared/config'
-import {
-  ApiError,
-  ApiErrorForbidden,
-  ApiErrorUnauthorized,
-} from '@/shared/utils'
+import { ApiErrorForbidden, ApiErrorUnauthorized } from '@/shared/utils'
 
 type AuthMiddleware = (...requiredRights: string[]) => RequestHandler
 type LoginMiddleware = () => RequestHandler
@@ -22,7 +18,11 @@ const authenticateCallback =
     requiredRights: string[],
   ) =>
   (err: any, user: User | false): void => {
-    if (err != null || user === false) {
+    if (err != null) {
+      reject(err)
+      return
+    }
+    if (user === false) {
       reject(new ApiErrorUnauthorized())
       return
     }
@@ -53,7 +53,7 @@ const loginCallback =
   ) =>
   (err: any, user: User | false): void => {
     if (err != null) {
-      reject(new ApiError())
+      reject(err)
       return
     }
     if (user === false) {

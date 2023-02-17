@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { roles } from '@/shared/config'
+import { roles } from '@/shared/config/roles'
 import { messages } from '@/shared/constants'
 import { isValidPassword } from '@/shared/utils/helpers'
 

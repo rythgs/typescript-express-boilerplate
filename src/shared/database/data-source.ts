@@ -4,7 +4,7 @@ import 'reflect-metadata'
 import { DataSource, type DataSourceOptions } from 'typeorm'
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies'
 
-import { config } from '@/shared/config'
+import { config } from '@/shared/config/config'
 
 interface DbConfigs {
   development: DataSourceOptions

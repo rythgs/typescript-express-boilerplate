@@ -6,14 +6,12 @@ import helmet from 'helmet'
 import passport from 'passport'
 
 import routes from '@/routes/v1'
-import {
-  config,
-  jwtStrategy,
-  localStrategy,
-  morganHandler,
-} from '@/shared/config'
-import { authLimiter, handleErrors } from '@/shared/middleware'
-import { ApiErrorNotFound } from '@/shared/utils'
+import { config } from '@/shared/config/config'
+import { morganHandler } from '@/shared/config/morgan'
+import { jwtStrategy, localStrategy } from '@/shared/config/passport'
+import { handleErrors } from '@/shared/middleware/error.middleware'
+import { authLimiter } from '@/shared/middleware/rate-limit.middleware'
+import { ApiErrorNotFound } from '@/shared/utils/ApiError'
 
 const app = express()
 

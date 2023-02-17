@@ -7,9 +7,9 @@ import { MoreThanOrEqual } from 'typeorm'
 import { Token } from './token.entity'
 
 import { type User } from '@/api/users'
-import { config } from '@/shared/config'
-import { dataSource } from '@/shared/database'
-import { ApiErrorForbidden } from '@/shared/utils'
+import { config } from '@/shared/config/config'
+import { dataSource } from '@/shared/database/data-source'
+import { ApiErrorForbidden } from '@/shared/utils/ApiError'
 
 const tokenRepository = dataSource.getRepository(Token)
 
@@ -63,7 +63,7 @@ const generateAccessToken = (
 const generateRefreshToken = async (userId: string): Promise<Token> => {
   const token = `${userId}.${crypto.randomBytes(40).toString('hex')}`
   const expires = addDays(new Date(), config.jwt.refreshTokenExpirationDays)
-  return await tokenRepository.save({
+  return tokenRepository.save({
     token,
     userId,
     expires,

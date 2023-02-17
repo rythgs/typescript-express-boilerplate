@@ -1,7 +1,7 @@
 import express from 'express'
 import swaggerUi from 'swagger-ui-express'
 
-import { swaggerDoc } from '@/shared/config'
+import { swaggerDoc } from '@/shared/config/swagger'
 
 const router = express.Router()
 

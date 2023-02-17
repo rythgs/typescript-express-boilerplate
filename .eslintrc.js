@@ -1,16 +1,27 @@
 module.exports = {
   env: {
-    browser: true,
     es2021: true,
+    node: true,
   },
-  extends: ['standard-with-typescript', 'prettier'],
+  extends: [
+    'airbnb-base',
+    'airbnb-typescript/base',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'prettier',
+  ],
   overrides: [],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
     project: './tsconfig.json',
   },
-  plugins: ['unused-imports'],
+  plugins: ['import', 'unused-imports'],
+  settings: {
+    'import/resolver': {
+      typescript: [],
+    },
+  },
   rules: {
     // 未使用のインポートを削除する
     'unused-imports/no-unused-imports': 'error',
@@ -24,5 +35,11 @@ module.exports = {
     ],
     // 空行を 1 行までとする
     'no-multiple-empty-lines': ['error', { max: 1 }],
+
+    // default exportは強制しない
+    'import/prefer-default-export': 'off',
+
+    // void ステートメント許可
+    'no-void': ['error', { allowAsStatement: true }],
   },
 }

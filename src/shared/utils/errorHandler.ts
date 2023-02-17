@@ -1,11 +1,10 @@
 import { type Response } from 'express'
 import httpStatus from 'http-status'
 
-import { logger } from '../config'
-import { messages } from '../constants'
-
 import { ApiError } from './ApiError'
-import { exitHandler } from './exitHandler'
+
+import { logger } from '@/shared/config/logger'
+import { messages } from '@/shared/constants'
 
 const isTrustedError = (error: Error): boolean =>
   error instanceof ApiError ? error.isOperational : false
@@ -27,7 +26,8 @@ const handleUntrustedError = (
   }
 
   logger.error('Encountered an untrusted error.', error)
-  void exitHandler(1)
+  // TODO: exitHandler(1)にしたい
+  process.exit(1)
 }
 
 export const errorHandler = (error: Error | ApiError, res?: Response): void => {

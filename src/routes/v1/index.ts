@@ -4,7 +4,7 @@ import authRoute from '@/api/auth'
 import docsRoute from '@/api/docs'
 import systemRoute from '@/api/system'
 import userRoute from '@/api/users'
-import { config } from '@/shared/config'
+import { config } from '@/shared/config/config'
 
 const router = express.Router()
 

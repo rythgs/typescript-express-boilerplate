@@ -1,3 +1,4 @@
+import { Request, Response } from 'express'
 import httpStatus from 'http-status'
 
 import {
@@ -9,7 +10,8 @@ import {
 } from './user.schema'
 import * as userService from './user.service'
 
-import { ApiErrorNotFound, asyncHandler } from '@/shared/utils'
+import { ApiErrorNotFound } from '@/shared/utils/ApiError'
+import { asyncHandler } from '@/shared/utils/asyncHandler'
 
 export const create = asyncHandler<unknown, unknown, CreateInput>(
   async (req, res) => {
@@ -45,6 +47,6 @@ export const list = asyncHandler(async (req, res) => {
   res.send(users)
 })
 
-export const me = asyncHandler(async (req, res) => {
+export const me = (req: Request, res: Response) => {
   res.send(req.user)
-})
+}

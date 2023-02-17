@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt'
 import { Column, Entity, Index, OneToMany } from 'typeorm'
 
-import { Token } from '@/api/token'
-import { roles, Roles } from '@/shared/config'
-import { BaseEntity } from '@/shared/database'
+import { type Token } from '@/api/auth'
+import { roles, Roles } from '@/shared/config/roles'
+import { BaseEntity } from '@/shared/database/base-entity'
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -20,10 +20,10 @@ export class User extends BaseEntity {
   @Column({ type: 'enum', enum: Object.values(roles), default: roles.user })
   role: Roles
 
-  @OneToMany(() => Token, (token) => token.user)
+  @OneToMany('Token', 'user')
   tokens: Token[]
 
   async isPasswordMatch(password: string): Promise<boolean> {
-    return await bcrypt.compare(password, this.password)
+    return bcrypt.compare(password, this.password)
   }
 }

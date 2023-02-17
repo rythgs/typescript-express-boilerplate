@@ -6,7 +6,7 @@ import {
   ApiErrorForbidden,
   ApiErrorNotFound,
   ApiErrorUnauthorized,
-} from '@/shared/utils'
+} from '@/shared/utils/ApiError'
 
 describe('Exception', () => {
   describe('ApiError', () => {

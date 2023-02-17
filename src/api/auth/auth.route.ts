@@ -3,7 +3,8 @@ import express from 'express'
 import * as authHandler from './auth.handler'
 import * as authSchema from './auth.schema'
 
-import { login, validate } from '@/shared/middleware'
+import { login } from '@/shared/middleware/auth.middleware'
+import { validate } from '@/shared/middleware/validate.middleware'
 
 const router = express.Router()
 

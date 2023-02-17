@@ -1,12 +1,11 @@
 import { Not, type DeepPartial } from 'typeorm'
 
 import { User } from './user.entity'
-
-import { type userSchema } from '.'
+import * as userSchema from './user.schema'
 
 import { messages } from '@/shared/constants'
-import { dataSource } from '@/shared/database'
-import { ApiErrorBadRequest, ApiErrorNotFound } from '@/shared/utils'
+import { dataSource } from '@/shared/database/data-source'
+import { ApiErrorBadRequest, ApiErrorNotFound } from '@/shared/utils/ApiError'
 
 const userRepository = dataSource.getRepository(User)
 
@@ -14,13 +13,13 @@ const userRepository = dataSource.getRepository(User)
  * IDでユーザーを1件取得
  */
 export const getUserById = async (id: string): Promise<User | null> =>
-  await userRepository.findOneBy({ id })
+  userRepository.findOneBy({ id })
 
 /**
  * メールアドレスでユーザーを1件取得
  */
 export const getUserByEmail = async (email: string): Promise<User | null> =>
-  await userRepository.findOneBy({ email })
+  userRepository.findOneBy({ email })
 
 /**
  * メールアドレスが登録済みか確認する
@@ -49,7 +48,7 @@ export const createUser = async (
   if (await isEmailTaken(payload.email)) {
     throw new ApiErrorBadRequest('メールアドレスはすでに登録されています。')
   }
-  return await userRepository.save(userRepository.create(payload))
+  return userRepository.save(userRepository.create(payload))
 }
 
 /**
@@ -83,4 +82,4 @@ export const deleteUserById = async (userId: string): Promise<void> => {
   await userRepository.delete({ id: userId })
 }
 
-export const getUsers = async (): Promise<User[]> => await userRepository.find()
+export const getUsers = async (): Promise<User[]> => userRepository.find()

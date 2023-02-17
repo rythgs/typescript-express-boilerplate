@@ -1,6 +1,7 @@
-import { tokenService } from '@/api/token'
+import * as tokenService from './token.service'
+
 import { userService } from '@/api/users'
-import { ApiErrorForbidden } from '@/shared/utils'
+import { ApiErrorForbidden } from '@/shared/utils/ApiError'
 
 /**
  * ログアウト処理
@@ -22,5 +23,5 @@ export const refreshAuth = async (
     throw new ApiErrorForbidden()
   }
   await tokenService.revokeRefreshToken(tokenModel.token)
-  return await tokenService.generateTokens(user)
+  return tokenService.generateTokens(user)
 }

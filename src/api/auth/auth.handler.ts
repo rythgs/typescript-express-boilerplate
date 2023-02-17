@@ -4,11 +4,12 @@ import _ from 'lodash'
 
 import { type LoginInput, type RegisterInput } from './auth.schema'
 import * as authService from './auth.service'
+import * as tokenService from './token.service'
 
-import { tokenService } from '@/api/token'
 import { userService, type User } from '@/api/users'
-import { config } from '@/shared/config'
-import { ApiErrorForbidden, asyncHandler } from '@/shared/utils'
+import { config } from '@/shared/config/config'
+import { ApiErrorForbidden } from '@/shared/utils/ApiError'
+import { asyncHandler } from '@/shared/utils/asyncHandler'
 
 const cookiePath = '/rest/v1/auth'
 
@@ -60,7 +61,11 @@ export const login = asyncHandler<unknown, unknown, LoginInput>(
 )
 
 export const logout = asyncHandler(async (req, res) => {
-  await authService.logout(req.cookies.refresh_token)
+  const cookies = req.cookies as {
+    refresh_token: string
+    [key: string]: unknown
+  }
+  await authService.logout(cookies.refresh_token)
   res.clearCookie('access_token', { maxAge: -1 })
   res.clearCookie('refresh_token', {
     maxAge: -1,
@@ -70,7 +75,11 @@ export const logout = asyncHandler(async (req, res) => {
 })
 
 export const refresh = asyncHandler(async (req, res) => {
-  const refreshToken = req.cookies.refresh_token
+  const cookies = req.cookies as {
+    refresh_token: string
+    [key: string]: unknown
+  }
+  const refreshToken = cookies.refresh_token
   if (refreshToken == null) {
     throw new ApiErrorForbidden()
   }

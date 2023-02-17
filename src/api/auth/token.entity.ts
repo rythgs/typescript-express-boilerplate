@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
 
-import { User } from '@/api/users'
+import { type User } from '@/api/users'
 
 @Entity('tokens')
 export class Token {
@@ -13,7 +13,7 @@ export class Token {
   @Column()
   blacklisted: boolean
 
-  @ManyToOne(() => User, (user) => user.tokens)
+  @ManyToOne('User', 'tokens')
   @JoinColumn({ name: 'user_id' })
   user: User
 

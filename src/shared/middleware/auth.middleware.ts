@@ -1,11 +1,13 @@
 import { type Request, type RequestHandler } from 'express'
 import passport from 'passport'
 
-import { messages } from '../constants'
-
 import { type User } from '@/api/users'
-import { roleRights } from '@/shared/config'
-import { ApiErrorForbidden, ApiErrorUnauthorized } from '@/shared/utils'
+import { roleRights } from '@/shared/config/roles'
+import { messages } from '@/shared/constants'
+import {
+  ApiErrorForbidden,
+  ApiErrorUnauthorized,
+} from '@/shared/utils/ApiError'
 
 type AuthMiddleware = (...requiredRights: string[]) => RequestHandler
 type LoginMiddleware = () => RequestHandler
@@ -14,10 +16,10 @@ const authenticateCallback =
   (
     req: Request,
     resolve: (value: void | PromiseLike<void>) => void,
-    reject: (reason?: any) => void,
+    reject: (reason?: unknown) => void,
     requiredRights: string[],
   ) =>
-  (err: any, user: User | false): void => {
+  (err: Error, user: User | false): void => {
     if (err != null) {
       reject(err)
       return
@@ -51,7 +53,7 @@ const loginCallback =
     resolve: (value: void | PromiseLike<void>) => void,
     reject: (reason?: any) => void,
   ) =>
-  (err: any, user: User | false): void => {
+  (err: Error, user: User | false): void => {
     if (err != null) {
       reject(err)
       return
@@ -71,6 +73,7 @@ export const auth: AuthMiddleware =
   (...requiredRights: string[]) =>
   async (req, res, next) => {
     await new Promise((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       passport.authenticate(
         'jwt',
         { session: false },
@@ -86,6 +89,7 @@ export const auth: AuthMiddleware =
  */
 export const login: LoginMiddleware = () => async (req, res, next) => {
   await new Promise((resolve, reject) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     passport.authenticate(
       'local',
       { session: false },

@@ -4,13 +4,13 @@ import type * as core from 'express-serve-static-core'
 export const asyncHandler =
   <
     P = core.ParamsDictionary,
-    ResBody = any,
-    ReqBody = any,
+    ResBody = unknown,
+    ReqBody = unknown,
     ReqQuery = core.Query,
   >(
     fn: (
       ...args: Parameters<RequestHandler<P, ResBody, ReqBody, ReqQuery>>
-    ) => Promise<any>,
+    ) => Promise<unknown>,
   ): RequestHandler<P, ResBody, ReqBody, ReqQuery> =>
   async (req, res, next) =>
-    await fn(req, res, next).catch(next)
+    fn(req, res, next).catch(next)

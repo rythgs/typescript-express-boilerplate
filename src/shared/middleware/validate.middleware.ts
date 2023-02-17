@@ -1,10 +1,12 @@
 import { type RequestHandler } from 'express'
 import { type ZodSchema } from 'zod'
 
-import { ApiErrorBadRequest } from '@/shared/utils'
+import { ApiErrorBadRequest } from '@/shared/utils/ApiError'
 
 export const validate =
-  (schema: ZodSchema): RequestHandler =>
+  (
+    schema: ZodSchema,
+  ): RequestHandler<unknown, unknown, Record<string, unknown>> =>
   (req, res, next) => {
     const parsed = schema.safeParse({
       params: req.params,

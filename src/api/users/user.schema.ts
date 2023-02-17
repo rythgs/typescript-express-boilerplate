@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
-import { RoleType } from './user.entity'
-
+import { roles } from '@/shared/config'
 import { messages } from '@/shared/constants'
 import { isValidPassword } from '@/shared/utils/helpers'
 
@@ -15,8 +14,8 @@ export const create = z.object({
         .string()
         .refine(isValidPassword, { message: messages.ERR_INVALID_PASSWORD }),
       // これは動かない
-      // role: z.nativeEnum(RoleType).optional()
-      role: z.nativeEnum(RoleType).or(z.literal(undefined)).optional(),
+      // role: z.nativeEnum(roles).optional()
+      role: z.nativeEnum(roles).or(z.literal(undefined)).optional(),
     })
     .strict(),
 })
@@ -42,7 +41,7 @@ export const update = z.object({
       password: z
         .string()
         .refine(isValidPassword, { message: messages.ERR_INVALID_PASSWORD }),
-      role: z.nativeEnum(RoleType),
+      role: z.nativeEnum(roles),
     })
     .partial()
     .strict(),

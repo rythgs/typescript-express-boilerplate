@@ -60,6 +60,7 @@ const loginCallback =
     }
     if (user === false) {
       reject(new ApiErrorUnauthorized(messages.ERR_LOGIN))
+      return
     }
 
     req.user = user

@@ -66,9 +66,7 @@ export const updateUserById = async (
     throw new ApiErrorBadRequest(messages.ERR_EMAIL_IS_TAKEN)
   }
 
-  await userRepository.update(userId, payload)
-
-  return (await getUserById(userId)) as User
+  return userRepository.save({ id: userId, ...payload })
 }
 
 /**

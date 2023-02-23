@@ -29,7 +29,7 @@ module.exports = {
     'import/order': [
       'error',
       {
-        alphabetize: { order: 'asc' },
+        alphabetize: { order: 'asc', caseInsensitive: true },
         'newlines-between': 'always',
       },
     ],

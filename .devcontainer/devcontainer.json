@@ -17,7 +17,8 @@
         "rangav.vscode-thunder-client",
         "shd101wyy.markdown-preview-enhanced",
         "mhutchie.git-graph",
-        "seatonjiang.gitmoji-vscode"
+        "seatonjiang.gitmoji-vscode",
+        "Orta.vscode-jest"
       ],
       "settings": {
         "editor.formatOnSave": true,

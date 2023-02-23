@@ -2,6 +2,7 @@ import compression from 'compression'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
+import { rateLimit } from 'express-rate-limit'
 import helmet from 'helmet'
 import passport from 'passport'
 
@@ -10,7 +11,6 @@ import { config } from '@/shared/config/config'
 import { morganHandler } from '@/shared/config/morgan'
 import { jwtStrategy, localStrategy } from '@/shared/config/passport'
 import { handleErrors } from '@/shared/middleware/error.middleware'
-import { authLimiter } from '@/shared/middleware/rate-limit.middleware'
 import { ApiErrorNotFound } from '@/shared/utils/ApiError'
 
 const app = express()
@@ -33,7 +33,16 @@ passport.use('jwt', jwtStrategy)
 passport.use('local', localStrategy)
 
 if (config.env === 'production') {
-  app.use('/rest/v1/auth', authLimiter)
+  app.use(
+    '/rest/v1/auth',
+    rateLimit({
+      // 15 minutes
+      windowMs: 15 * 60 * 1000,
+      // Limit each IP to 20 requests per `window` (here, per 15 minutes)
+      max: 20,
+      skipSuccessfulRequests: true,
+    }),
+  )
 }
 
 // api routes

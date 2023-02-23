@@ -3,6 +3,7 @@ import httpStatus from 'http-status'
 
 import { ApiError } from './ApiError'
 
+import { hooks } from '@/shared/config/hooks'
 import { logger } from '@/shared/config/logger'
 import { messages } from '@/shared/constants'
 
@@ -26,8 +27,7 @@ const handleUntrustedError = (
   }
 
   logger.error('Encountered an untrusted error.', error)
-  // TODO: exitHandler(1)にしたい
-  process.exit(1)
+  hooks.emit('untrustedError')
 }
 
 export const errorHandler = (error: Error | ApiError, res?: Response): void => {

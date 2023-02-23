@@ -4,6 +4,7 @@ import { createHttpTerminator } from 'http-terminator'
 
 import app from '@/app'
 import { config } from '@/shared/config/config'
+import { hooks } from '@/shared/config/hooks'
 import { logger } from '@/shared/config/logger'
 import { dataSource } from '@/shared/database/data-source'
 import { errorHandler } from '@/shared/utils/errorHandler'
@@ -23,6 +24,10 @@ process.on('unhandledRejection', (reason: Error | unknown) => {
 process.on('uncaughtException', (error: Error) => {
   logger.error(`Uncaught Exception: ${error.message}`)
   errorHandler(error)
+})
+
+hooks.on('untrustedError', () => {
+  void exitHandler(1)
 })
 
 process.on('SIGTERM', () => {

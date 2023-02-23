@@ -14,8 +14,9 @@ export const validate =
       body: req.body,
     })
     if (parsed.success) {
-      next()
-      return
+      Object.assign(req, parsed.data)
+      return next()
     }
-    next(new ApiErrorBadRequest(undefined, parsed.error.errors))
+
+    return next(new ApiErrorBadRequest(undefined, parsed.error.errors))
   }

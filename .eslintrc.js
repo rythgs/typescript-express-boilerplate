@@ -21,6 +21,9 @@ module.exports = {
     'import/resolver': {
       typescript: [],
     },
+    // src/@types で上書きした型を持つパッケージがinternalとして認識され
+    // import/order でエラーとなってしまう現象を回避する
+    'import/external-module-folders': ['node_modules', 'src/@types'],
   },
   rules: {
     // 未使用のインポートを削除する

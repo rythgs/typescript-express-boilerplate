@@ -1,8 +1,8 @@
-import winston, { createLogger } from 'winston'
+import { createLogger, format, transports } from 'winston'
 
 import { config } from './config'
 
-const enumerateErrorFormat = winston.format((info) => {
+const enumerateErrorFormat = format((info) => {
   if (info instanceof Error) {
     Object.assign(info, { message: info.stack })
   }
@@ -11,18 +11,17 @@ const enumerateErrorFormat = winston.format((info) => {
 
 export const logger = createLogger({
   level: config.logger.level,
-  format: winston.format.combine(
+  format: format.combine(
     enumerateErrorFormat(),
-    config.env === 'development'
-      ? winston.format.colorize()
-      : winston.format.uncolorize(),
-    winston.format.splat(),
-    winston.format.printf(
-      ({ level, message }) => `${level}: ${message as string}`,
-    ),
+    config.env === 'development' ? format.colorize() : format.uncolorize(),
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    format.printf(({ level, message, timestamp, ...rest }) => {
+      const more = Object.keys(rest).length > 0 ? JSON.stringify(rest) : ''
+      return `${timestamp as string} [${level}] ${message as string} ${more}`
+    }),
   ),
   transports: [
-    new winston.transports.Console({
+    new transports.Console({
       stderrLevels: ['error'],
     }),
   ],

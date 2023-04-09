@@ -10,7 +10,10 @@ import routes from '@/routes/v1'
 import { config } from '@/shared/config/config'
 import { morganHandler } from '@/shared/config/morgan'
 import { jwtStrategy, localStrategy } from '@/shared/config/passport'
-import { handleErrors } from '@/shared/middleware/error.middleware'
+import {
+  errorConverter,
+  handleErrors,
+} from '@/shared/middleware/error.middleware'
 import { ApiErrorNotFound } from '@/shared/utils/ApiError'
 
 const app = express()
@@ -52,6 +55,9 @@ app.use('/rest/v1', routes)
 app.all('*', (req, res, next) => {
   next(new ApiErrorNotFound())
 })
+
+// error converter
+app.use(errorConverter)
 
 // global error handling
 app.use(handleErrors)

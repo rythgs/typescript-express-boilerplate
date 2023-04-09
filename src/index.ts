@@ -17,7 +17,7 @@ const exitHandler = createExitHandler(server, httpTerminator)
 
 process.on('unhandledRejection', (reason: Error | unknown) => {
   const message = reason instanceof Error ? reason.message : String(reason)
-  logger.error(`Unhandled Rejection:`, message)
+  logger.error(`Unhandled Rejection: %s`, message)
   throw new Error(message)
 })
 
@@ -47,7 +47,7 @@ const bootstrap = async (): Promise<void> => {
       logger.info(`Server started on port ${config.port} (${config.env})`)
     })
   } catch (error) {
-    logger.error(`Server bootstrap error.`, error)
+    logger.error(`Server bootstrap error. %o`, error)
     void exitHandler(1)
   }
 }

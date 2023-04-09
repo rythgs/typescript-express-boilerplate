@@ -1,6 +1,5 @@
 import { type CookieOptions, type Response } from 'express'
 import httpStatus from 'http-status'
-import _ from 'lodash'
 
 import { type LoginInput, type RegisterInput } from './auth.schema'
 import * as authService from './auth.service'
@@ -43,9 +42,8 @@ const setTokenCookies = (
 
 export const register = asyncHandler<unknown, unknown, RegisterInput>(
   async (req, res) => {
-    const user = await userService.createUser(
-      _.omit(req.body, 'passwordConfirm'),
-    )
+    const { passwordConfirm, ...rest } = req.body
+    const user = await userService.createUser(rest)
     res.status(httpStatus.CREATED).send(user)
   },
 )

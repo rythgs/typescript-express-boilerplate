@@ -1,3 +1,3 @@
-import docsRoute from './docs.route'
+import { docRouter } from './doc.route'
 
-export default docsRoute
+export default docRouter

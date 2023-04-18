@@ -1,3 +1,3 @@
-import systemRoute from './system.route'
+import { systemRouter } from './system.route'
 
-export default systemRoute
+export default systemRouter

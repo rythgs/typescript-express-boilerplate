@@ -1,12 +1,12 @@
 import express from 'express'
 
-const router = express.Router()
+const systemRouter = express.Router()
 
-router.get('/ping', (_, res) => {
+systemRouter.get('/ping', (_, res) => {
   res.send({ ping: 'pong' })
 })
 
-export default router
+export { systemRouter }
 
 /**
  * @swagger

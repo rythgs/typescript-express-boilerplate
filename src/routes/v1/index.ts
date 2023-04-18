@@ -1,7 +1,7 @@
 import express from 'express'
 
 import authRoute from '@/api/auth'
-import docsRoute from '@/api/docs'
+import docRoute from '@/api/docs'
 import systemRoute from '@/api/system'
 import userRoute from '@/api/users'
 import { config } from '@/shared/config/config'
@@ -26,7 +26,7 @@ const defaultRoutes = [
 const devRoutes = [
   {
     path: '/docs',
-    route: docsRoute,
+    route: docRoute,
   },
 ]
 

@@ -10,9 +10,9 @@ dotenv.config({
 const envSchema = z.object({
   NODE_ENV: z.enum(['production', 'development', 'test']),
   PORT: z.optional(z.preprocess(Number, z.number())).default(3000),
-  // https://github.com/winstonjs/winston#logging
+  // https://github.com/pinojs/pino/blob/master/pino.d.ts#L150
   LOG_LEVEL: z
-    .enum(['error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly'])
+    .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
     .optional()
     .default('info'),
   ACCESS_TOKEN_PASSPHRASE: z.string(),
